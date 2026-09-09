@@ -2,7 +2,6 @@ package it.s8.java_uestions;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -22,7 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class JavaSeniorInterviewQuestionsTests {
 
   private static Stream<Object> strings() {
-    return Stream.of(Arguments.of("hello", "olleh", true));
+    return Stream.of(Arguments.of("hello", "olleh", true), Arguments.of("Hello", "olleh", true));
   }
 
   @Test
@@ -60,18 +59,6 @@ class JavaSeniorInterviewQuestionsTests {
   }
 
   @Test
-  void reverseString() {
-    var input = "ciao";
-    var actual = reverse(input);
-    assertThat(actual).isEqualTo("oaic");
-  }
-
-  @Test
-  void reverseEmptyString() {
-    assertThrows(IllegalArgumentException.class, () -> reverse(StringUtils.EMPTY));
-  }
-
-  @Test
   void workingWithHashMap() {
 
     Map<String, String> map = new HashMap<>();
@@ -82,20 +69,6 @@ class JavaSeniorInterviewQuestionsTests {
     map.put("d", null);
     log.info("map size is {}", map.size());
     map.forEach((k, v) -> log.info("key-value is {}-{}", k, v));
-  }
-
-  /**
-   * Why i should use JavaDoc
-   *
-   * @param
-   * @return
-   */
-  private String reverse(String input) {
-    // Woah checking the input, but why I should that?
-    if (StringUtils.isNotBlank(input)) {
-      return new StringBuilder(input).reverse().toString();
-    }
-    throw new IllegalArgumentException("input is null or empty");
   }
 
   @Test
@@ -157,26 +130,37 @@ class JavaSeniorInterviewQuestionsTests {
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
   }
 
-  @ParameterizedTest(name = " Input:{index} => a={0}, b={1}, isPalindrome={2}")
+  @ParameterizedTest(name = " Input:{index} => firstString={0}, secondString={1}, isPalindrome={2}")
   @MethodSource("strings")
   void palindromeTest_official(String first, String second, boolean isPalindrome) {
 
-    assertThat(isPalindrome(first, second)).isEqualTo(isPalindrome);
+    assertThat(isPalindromeFromTwoStrings(first, second)).isEqualTo(isPalindrome);
   }
 
   @Test
   void palindromeTest_theSecond() {
-    var a = "";
+    var a = StringUtils.EMPTY;
     var b = "ciao";
-    HashMap<String, Integer> map = new HashMap<>();
-    map.put(null, null);
-    map.put(null, 1);
-    map.put("ciao", 1);
-    assertThat(map).hasSize(2);
-    assertThatThrownBy(() -> isPalindrome(a, b)).isExactlyInstanceOf(RuntimeException.class);
+    assertThatThrownBy(() -> isPalindromeFromTwoStrings(a, b))
+        .isExactlyInstanceOf(RuntimeException.class);
   }
 
-  boolean isPalindrome(String first, String second) {
+  @Test
+  void palindromeTestSingleString() {
+    var input = "Mom";
+    assertThat(isPalindromeSingleString(input)).isTrue();
+  }
+
+  @Test
+  void palindromeTestEmptyAndNullString() {
+    var input = "";
+    assertThatThrownBy(() -> isPalindromeSingleString(input))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> isPalindromeSingleString(null))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+  }
+
+  boolean isPalindromeFromTwoStrings(String first, String second) {
 
     if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
       throw new RuntimeException("One of two inputs is null or empty");
@@ -184,10 +168,13 @@ class JavaSeniorInterviewQuestionsTests {
     if (first.length() != second.length()) {
       return false;
     }
-    var list = new ArrayList<>();
-    list.add(first);
-    list.add(second);
-    Collections.reverse(list);
-    return first.equals(StringUtils.reverse(second));
+    return first.toLowerCase().contentEquals(new StringBuilder(second.toLowerCase()).reverse());
+  }
+
+  boolean isPalindromeSingleString(String toCheck) {
+    if (toCheck == null || toCheck.isBlank()) {
+      throw new IllegalArgumentException("Input is null or empty");
+    }
+    return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
   }
 }
