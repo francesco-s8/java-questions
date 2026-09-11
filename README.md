@@ -6,5 +6,5 @@ This is a really stupid project of common "live coding" questions for Java (Spri
 
 Just run locally this class JavaSeniorInterviewQuestionsTests
 
-Id it does not work, well in my PC it works so it's your problem (That is the right answer in an interview or daily job)
+If it does not work, well in my PC it works so it's your problem (That is the right answer in an interview or daily job)
 
