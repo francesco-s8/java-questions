@@ -1,4 +1,4 @@
-package it.s8.java_uestions;
+package it.s8.java_questions;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -158,6 +158,18 @@ class JavaSeniorInterviewQuestionsTests {
         .isExactlyInstanceOf(IllegalArgumentException.class);
     assertThatThrownBy(() -> isPalindromeSingleString(null))
         .isExactlyInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  @DisplayName("Test using filter stream method")
+  void filterTest() {
+    var userOne = new User("John", "123");
+    var userTwo = new User("Jane", "456");
+    var input = List.of(userOne, userTwo);
+
+    var actual = input.stream().filter(user -> "John".equals(user.name())).toList();
+
+    assertThat(actual).hasSize(1).contains(userOne);
   }
 
   boolean isPalindromeFromTwoStrings(String first, String second) {
