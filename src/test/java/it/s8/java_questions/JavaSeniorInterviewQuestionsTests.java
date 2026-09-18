@@ -204,4 +204,42 @@ class JavaSeniorInterviewQuestionsTests {
     return input.stream()
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
   }
+
+  @Test
+  @DisplayName("Reinventing the wheel, defining a custom is Palindrome method")
+  void customIsPalindrome() {
+
+    // We should used parametrized test and dedicated unit tests for exceptions
+    var input = "mom";
+    assertThat(customIsPalindrome(input)).isTrue();
+    var secondInput = "Mom";
+    assertThat(customIsPalindrome(secondInput)).isTrue();
+    var thirdInput = "John";
+    assertThat(customIsPalindrome(thirdInput)).isFalse();
+    var fourthInput = "   ";
+    assertThatThrownBy(() -> customIsPalindrome(fourthInput))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    var fifthInput = "";
+    assertThatThrownBy(() -> customIsPalindrome(fifthInput))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+
+    assertThatThrownBy(() -> customIsPalindrome(null))
+        .isExactlyInstanceOf(NullPointerException.class);
+  }
+
+  private boolean customIsPalindrome(String input) {
+    Objects.requireNonNull(input);
+    var charArray = input.toLowerCase().toCharArray();
+    if (input.isBlank()) {
+      throw new IllegalArgumentException("String contains only whitespaces or is empty");
+    }
+    for (int i = 0; i < charArray.length; i++) {
+      for (int j = charArray.length - 1; j > 0; j--) {
+        if (charArray[i++] != charArray[j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
