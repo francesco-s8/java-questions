@@ -1,4 +1,4 @@
-# THE JAVA ULTIMATE INTERVIEW QUESTIONS FOR SPRING (BOOT) FRAMEWORK
+# THE JAVA ULTIMATE INTERVIEW QUESTIONS FOR SPRING BOOT NOT REALLY (NO AI agents have been used to do this idiotic project)
 
 ## INTRO
 
@@ -11,5 +11,6 @@ command line:
 
 ## PS:
 
-If it does not work, well in my PC it works so it's your problem (That is the right answer in an interview or daily job)
+If it does not work, well in my PC it works so it's your problem (That is the right answer in an interview or daily
+task, mindset )
 
