@@ -63,6 +63,11 @@
             <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.6.3</version>
+        </dependency>
     </dependencies>
 
     <build>
