@@ -83,7 +83,7 @@ class JavaSeniorInterviewQuestionsTests {
   void continueLoop() {
 
     var list = Stream.of("1", "abc", "2");
-    list.forEachOrdered(
+    list.forEach(
         el -> {
           try {
             log.info("Number converted is {}", Integer.valueOf(el));
