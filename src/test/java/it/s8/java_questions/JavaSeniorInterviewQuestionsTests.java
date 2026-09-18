@@ -124,12 +124,6 @@ class JavaSeniorInterviewQuestionsTests {
     assertThat(monthsBetween).isGreaterThan(1L);
   }
 
-  private Map<String, Long> countByOccurrence(final List<String> input) {
-
-    return input.stream()
-        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-  }
-
   @ParameterizedTest(name = " Input:{index} => firstString={0}, secondString={1}, isPalindrome={2}")
   @MethodSource("strings")
   void palindromeTest_official(String first, String second, boolean isPalindrome) {
@@ -172,6 +166,21 @@ class JavaSeniorInterviewQuestionsTests {
     assertThat(actual).hasSize(1).contains(userOne);
   }
 
+  private static List<User> stubUsersList() {
+    var userOne = new User("John", "123");
+    var userTwo = new User("Jane", "456");
+    return List.of(userOne, userTwo);
+  }
+
+  @Test
+  @DisplayName("Simple test using map from Stream API")
+  void streamMapTest() {
+    var input = stubUsersList();
+
+    var names = input.stream().map(User::name).toList();
+    assertThat(names).isNotEmpty().hasSize(2);
+  }
+
   boolean isPalindromeFromTwoStrings(String first, String second) {
 
     if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
@@ -188,5 +197,11 @@ class JavaSeniorInterviewQuestionsTests {
       throw new IllegalArgumentException("Input is null or empty");
     }
     return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
+  }
+
+  Map<String, Long> countByOccurrence(final List<String> input) {
+
+    return input.stream()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
   }
 }
