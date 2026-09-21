@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -225,6 +226,28 @@ class JavaSeniorInterviewQuestionsTests {
 
     assertThatThrownBy(() -> customIsPalindrome(null))
         .isExactlyInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  @DisplayName("isPalindromeWithStopWatch with StopWatch")
+  void isPalindromeWithStopWatch() {
+    var input = "mom";
+    var watch = StopWatch.createStarted();
+    var firstResult = customIsPalindrome(input);
+    watch.stop();
+    log.info(
+        "Time taken to check palindrome (custom method) in nanos : {}",
+        watch.getDuration().toNanos());
+
+    assertThat(firstResult).isTrue();
+    watch.reset();
+    watch.start();
+    var secondResult = isPalindromeSingleString(input);
+    watch.stop();
+    log.info(
+        "Time taken to check palindrome (non custom method) in nanos : {}",
+        watch.getDuration().toNanos());
+    assertThat(secondResult).isTrue();
   }
 
   private boolean customIsPalindrome(String input) {
