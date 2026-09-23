@@ -77,6 +77,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
+                    <parallel>all</parallel>
+                    <threadCount>5</threadCount>
                     <dependenciesToScan>
                         <dependency>org.junit.jupiter</dependency>
                     </dependenciesToScan>
