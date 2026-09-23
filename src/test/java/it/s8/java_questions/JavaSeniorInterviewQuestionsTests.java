@@ -182,24 +182,6 @@ class JavaSeniorInterviewQuestionsTests {
     assertThat(names).isNotEmpty().hasSize(2);
   }
 
-  boolean isPalindromeFromTwoStrings(String first, String second) {
-
-    if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
-      throw new RuntimeException("One of two inputs is null or empty");
-    }
-    if (first.length() != second.length()) {
-      return false;
-    }
-    return first.toLowerCase().contentEquals(new StringBuilder(second.toLowerCase()).reverse());
-  }
-
-  boolean isPalindromeSingleString(String toCheck) {
-    if (toCheck == null || toCheck.isBlank()) {
-      throw new IllegalArgumentException("Input is null or empty");
-    }
-    return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
-  }
-
   Map<String, Long> countByOccurrence(final List<String> input) {
 
     return input.stream()
@@ -250,7 +232,7 @@ class JavaSeniorInterviewQuestionsTests {
     assertThat(secondResult).isTrue();
   }
 
-  private boolean customIsPalindrome(String input) {
+  boolean customIsPalindrome(String input) {
     Objects.requireNonNull(input);
     var charArray = input.toLowerCase().toCharArray();
     if (input.isBlank()) {
@@ -264,5 +246,23 @@ class JavaSeniorInterviewQuestionsTests {
       }
     }
     return true;
+  }
+
+  boolean isPalindromeFromTwoStrings(String first, String second) {
+
+    if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
+      throw new RuntimeException("One of two inputs is null or empty");
+    }
+    if (first.length() != second.length()) {
+      return false;
+    }
+    return first.toLowerCase().contentEquals(new StringBuilder(second.toLowerCase()).reverse());
+  }
+
+  boolean isPalindromeSingleString(String toCheck) {
+    if (toCheck == null || toCheck.isBlank()) {
+      throw new IllegalArgumentException("Input is null or empty");
+    }
+    return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
   }
 }
