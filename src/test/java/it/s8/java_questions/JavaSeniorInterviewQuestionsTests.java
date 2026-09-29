@@ -73,8 +73,8 @@ class JavaSeniorInterviewQuestionsTests {
     map.put(null, "null_");
     map.put("c", null);
     map.put("d", null);
-    log.info("map size is {}", map.size());
     map.forEach((k, v) -> log.info("key-value is {}-{}", k, v));
+    assertThat(map).hasSize(5).containsEntry(null, "null_").containsEntry("c", null);
   }
 
   @Test
