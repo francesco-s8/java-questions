@@ -25,6 +25,11 @@ class JavaSeniorInterviewQuestionsTests {
     return Stream.of(Arguments.of("hello", "olleh", true), Arguments.of("Hello", "olleh", true));
   }
 
+  private static Stream<Object> stringsSmart() {
+    return Stream.of(
+        Arguments.of("hello", false), Arguments.of("Mom", true), Arguments.of("abc", false));
+  }
+
   @Test
   @DisplayName("This the Test of everything")
   void ultimateTest() {
@@ -130,6 +135,19 @@ class JavaSeniorInterviewQuestionsTests {
   void palindromeTest_official(String first, String second, boolean isPalindrome) {
 
     assertThat(isPalindromeFromTwoStrings(first, second)).isEqualTo(isPalindrome);
+  }
+
+  @ParameterizedTest(name = " Input:{index} => string={0}, isPalindrome={1}")
+  @MethodSource("stringsSmart")
+  void palindromeTest_smart(String first, boolean isPalindrome) {
+
+    assertThat(isPalindromeSmart(first)).isEqualTo(isPalindrome);
+    assertThatThrownBy(() -> isPalindromeSmart(null))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> isPalindromeSmart(""))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> isPalindromeSmart("     "))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
@@ -253,6 +271,7 @@ class JavaSeniorInterviewQuestionsTests {
     if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
       throw new RuntimeException("One of two inputs is null or empty");
     }
+    StringUtils.reverse(first);
     if (first.length() != second.length()) {
       return false;
     }
@@ -264,5 +283,24 @@ class JavaSeniorInterviewQuestionsTests {
       throw new IllegalArgumentException("Input is null or empty");
     }
     return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
+  }
+
+  boolean isPalindromeSmart(String word) {
+
+    if (word == null || word.isBlank()) {
+      throw new IllegalArgumentException("Input is null or empty");
+    }
+    var wordLowerCase = word.toLowerCase();
+
+    int start = 0;
+    int end = word.length() - 1;
+    while (start < end) {
+      if (wordLowerCase.charAt(start) != wordLowerCase.charAt(end)) {
+        return false;
+      }
+      start++;
+      end--;
+    }
+    return true;
   }
 }
