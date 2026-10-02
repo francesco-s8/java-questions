@@ -1,4 +1,4 @@
-# THE JAVA ULTIMATE INTERVIEW QUESTIONS FOR SPRING BOOT NOT REALLY (NO AI agents have been used to do this idiotic project)
+# THE JAVA ULTIMATE INTERVIEW QUESTIONS (NO AI agents have been used to do this idiotic project)
 
 ## INTRO
 
