@@ -6,7 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 @Slf4j
 class JavaSeniorInterviewQuestionsTests {
 
+  private static final Pattern timestampPattern = Pattern.compile("timestamp=\"(\\d+)\"");
+
   private static Stream<Arguments> stringsSmart() {
     return Stream.of(
         Arguments.of("hello", false), Arguments.of("Mom", true), Arguments.of("abc", false));
@@ -32,10 +38,29 @@ class JavaSeniorInterviewQuestionsTests {
     return List.of(userOne, userTwo);
   }
 
+  private Collection<Long> getTimestampsByDescription(String xml, String description) {
+
+    ArrayList<Long> times = new ArrayList<>();
+    var split = Arrays.stream(xml.split("\n")).toList();
+
+    for (int i = 0; i < split.size(); i++) {
+      var line = split.get(i);
+      if (line.contains(description)) {
+        var l = split.get(i - 1);
+        Matcher matcher = timestampPattern.matcher(l);
+        if (matcher.find()) {
+          long timestamp = Long.parseLong(matcher.group(1));
+          times.add(timestamp);
+        }
+      }
+    }
+    return times;
+  }
+
   @Test
   @DisplayName("This the Test of everything")
   void ultimateTest() {
-    // Woah i am using Java record that's crazy!!OMG!!
+    // Woah I am using Java record that's crazy!!OMG!!
     var user = new User("John", "Doe");
     assertThat(user).isNotNull();
   }
@@ -284,5 +309,53 @@ class JavaSeniorInterviewQuestionsTests {
       end--;
     }
     return true;
+  }
+
+  String numbersToLetters(String s) {
+    if (s == null || s.isBlank()) {
+      throw new IllegalArgumentException("Input is null or empty");
+    }
+
+    StringBuilder result = new StringBuilder();
+
+    for (String token : s.split("[\\s+]+")) {
+
+      if (token.isBlank()) {
+        continue;
+      }
+      int number = Integer.parseInt(token);
+      if (number < 1 || number > 26) {
+        throw new IllegalArgumentException("Number out of range: " + number);
+      }
+      result.append((char) ('A' + number - 1));
+    }
+
+    return result.toString();
+  }
+
+  @Test
+  void fromStringOfNumbersToLetters() {
+    var in = "20 5 19 20+4 15 13 5";
+    var actual = numbersToLetters(in);
+    assertThat(actual).isEqualTo("TESTDOME");
+  }
+
+  @Test
+  void xzc() {
+    String xml =
+        """
+            <?xml version="1.0" encoding="UTF-8"?>
+            + "<log>
+            + "<event timestamp="1614285589">
+            + "<description>Intrusion detected</description>
+            + "</event>
+            + "<event timestamp="1614286432">
+            + "<description>Intrusion ended</description>
+            + "</event>
+            + "</log>
+        """;
+
+    Collection<Long> timestamps = getTimestampsByDescription(xml, "Intrusion ended");
+    assertThat(timestamps).containsExactly(1614286432L);
   }
 }
