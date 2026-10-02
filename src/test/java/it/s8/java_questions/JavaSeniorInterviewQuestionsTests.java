@@ -153,14 +153,6 @@ class JavaSeniorInterviewQuestionsTests {
   }
 
   @Test
-  void palindromeTest_theSecond() {
-    var a = StringUtils.EMPTY;
-    var b = "ciao";
-    assertThatThrownBy(() -> isPalindromeFromTwoStrings(a, b))
-        .isExactlyInstanceOf(RuntimeException.class);
-  }
-
-  @Test
   void palindromeTestSingleString() {
     var input = "Mom";
     assertThat(isPalindromeSingleString(input)).isTrue();
@@ -266,18 +258,6 @@ class JavaSeniorInterviewQuestionsTests {
       }
     }
     return true;
-  }
-
-  boolean isPalindromeFromTwoStrings(String first, String second) {
-
-    if (StringUtils.isBlank(first) || StringUtils.isBlank(second)) {
-      throw new RuntimeException("One of two inputs is null or empty");
-    }
-    StringUtils.reverse(first);
-    if (first.length() != second.length()) {
-      return false;
-    }
-    return first.toLowerCase().contentEquals(new StringBuilder(second.toLowerCase()).reverse());
   }
 
   boolean isPalindromeSingleString(String toCheck) {
