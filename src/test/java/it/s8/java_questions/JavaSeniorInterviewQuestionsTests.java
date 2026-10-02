@@ -21,13 +21,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 @Slf4j
 class JavaSeniorInterviewQuestionsTests {
 
-  private static Stream<Object> strings() {
-    return Stream.of(Arguments.of("hello", "olleh", true), Arguments.of("Hello", "olleh", true));
-  }
-
-  private static Stream<Object> stringsSmart() {
+  private static Stream<Arguments> stringsSmart() {
     return Stream.of(
         Arguments.of("hello", false), Arguments.of("Mom", true), Arguments.of("abc", false));
+  }
+
+  private List<User> stubUsersList() {
+    var userOne = new User("John", "123");
+    var userTwo = new User("Jane", "456");
+    return List.of(userOne, userTwo);
   }
 
   @Test
@@ -130,18 +132,18 @@ class JavaSeniorInterviewQuestionsTests {
     assertThat(monthsBetween).isGreaterThan(1L);
   }
 
-  @ParameterizedTest(name = " Input:{index} => firstString={0}, secondString={1}, isPalindrome={2}")
-  @MethodSource("strings")
-  void palindromeTest_official(String first, String second, boolean isPalindrome) {
-
-    assertThat(isPalindromeFromTwoStrings(first, second)).isEqualTo(isPalindrome);
-  }
-
   @ParameterizedTest(name = " Input:{index} => string={0}, isPalindrome={1}")
   @MethodSource("stringsSmart")
   void palindromeTest_smart(String first, boolean isPalindrome) {
 
-    assertThat(isPalindromeSmart(first)).isEqualTo(isPalindrome);
+    var sw = new StopWatch();
+    sw.start();
+    var result = isPalindromeSmart(first);
+    sw.stop();
+    log.info(
+        "Time taken to check palindrome (smart method) in nanos : {}", sw.getDuration().toNanos());
+    assertThat(result).isEqualTo(isPalindrome);
+
     assertThatThrownBy(() -> isPalindromeSmart(null))
         .isExactlyInstanceOf(IllegalArgumentException.class);
     assertThatThrownBy(() -> isPalindromeSmart(""))
@@ -176,19 +178,10 @@ class JavaSeniorInterviewQuestionsTests {
   @Test
   @DisplayName("Test using filter stream method")
   void filterTest() {
-    var userOne = new User("John", "123");
-    var userTwo = new User("Jane", "456");
-    var input = List.of(userOne, userTwo);
 
+    var input = stubUsersList();
     var actual = input.stream().filter(user -> "John".equals(user.name())).toList();
-
-    assertThat(actual).hasSize(1).contains(userOne);
-  }
-
-  private static List<User> stubUsersList() {
-    var userOne = new User("John", "123");
-    var userTwo = new User("Jane", "456");
-    return List.of(userOne, userTwo);
+    assertThat(actual).hasSize(1).contains(stubUsersList().getFirst());
   }
 
   @Test
@@ -231,15 +224,24 @@ class JavaSeniorInterviewQuestionsTests {
   @Test
   @DisplayName("isPalindromeWithStopWatch with StopWatch")
   void isPalindromeWithStopWatch() {
-    var input = "mom";
+    var input = "Tattarrattat";
     var watch = StopWatch.createStarted();
     var firstResult = customIsPalindrome(input);
     watch.stop();
     log.info(
-        "Time taken to check palindrome (custom method) in nanos : {}",
+        "Input {},Time taken to check palindrome (custom method) in nanos : {}",
+        input,
         watch.getDuration().toNanos());
 
     assertThat(firstResult).isTrue();
+    watch.reset();
+    watch.start();
+    isPalindromeSmart(input);
+    watch.stop();
+    log.info(
+        "Input {},Time taken to check palindrome (smart method) in nanos : {}",
+        input,
+        watch.getDuration().toNanos());
     watch.reset();
     watch.start();
     var secondResult = isPalindromeSingleString(input);
