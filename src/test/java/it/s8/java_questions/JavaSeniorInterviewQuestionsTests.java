@@ -316,19 +316,17 @@ class JavaSeniorInterviewQuestionsTests {
       throw new IllegalArgumentException("Input is null or empty");
     }
 
-    StringBuilder result = new StringBuilder();
+    var result = new StringBuilder();
+    var list = new ArrayList<>(Arrays.asList(s.split("[\\s+]+")));
 
-    for (String token : s.split("[\\s+]+")) {
-
-      if (token.isBlank()) {
-        continue;
-      }
-      int number = Integer.parseInt(token);
-      if (number < 1 || number > 26) {
-        throw new IllegalArgumentException("Number out of range: " + number);
-      }
-      result.append((char) ('A' + number - 1));
-    }
+    list.forEach(
+        el -> {
+          var number = Integer.parseInt(el);
+          if (number < 1 || number > 26) {
+            throw new IllegalArgumentException("Number out of range: " + number);
+          }
+          result.append((char) ('A' + number - 1));
+        });
 
     return result.toString();
   }
