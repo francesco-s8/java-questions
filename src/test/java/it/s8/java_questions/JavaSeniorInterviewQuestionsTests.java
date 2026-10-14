@@ -8,6 +8,7 @@ import java.time.Period;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -355,5 +356,59 @@ class JavaSeniorInterviewQuestionsTests {
 
     Collection<Long> timestamps = getTimestampsByDescription(xml, "Intrusion ended");
     assertThat(timestamps).containsExactly(1614286432L);
+  }
+
+  @Test
+  void checkWordOccurrence() {
+
+    var text =
+"""
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sodales vestibulum nibh, non sollicitudin massa sodales a. Proin vestibulum ut lacus a volutpat.
+Ut porta ut metus sed euismod. Duis eget libero odio. In ornare cursus sem non dignissim. Proin interdum ipsum et odio mollis, ut facilisis lacus placerat. Ut luctus risus at nunc convallis rutrum.
+Nunc tellus quam, pellentesque ut purus eu, pulvinar mollis nisi. Curabitur eu metus lorem.
+Nullam efficitur vulputate sapien. Nunc quis bibendum eros. Maecenas viverra tincidunt urna, quis efficitur tellus suscipit nec. In sit amet feugiat neque.
+In eget dui maximus, consequat orci sit amet, scelerisque arcu. Duis massa ex, imperdiet eu velit eu, ultrices scelerisque urna.
+Lorem.
+""";
+
+    var text2 = "Lorem. Lorem";
+
+    assertThat(wordOccurrence(text, "Hello")).isZero();
+    assertThat(wordOccurrence(text, "Lorem")).isEqualTo(3);
+    assertThat(wordOccurrence(text2, "Lorem")).isEqualTo(2);
+    assertThatThrownBy(() -> wordOccurrence(StringUtils.EMPTY, "Lorem"))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> wordOccurrence(null, "Lorem"))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> wordOccurrence(text, null))
+        .isExactlyInstanceOf(IllegalArgumentException.class);
+  }
+
+  /**
+   * Instead build a new wheel use an existing one, you may forget same cases
+   *
+   * @param text The input text
+   * @param word The word occurrences to calc
+   * @return The occurrences found
+   */
+  private int wordOccurrence(String text, String word) {
+
+    if (StringUtils.isBlank(text)) {
+      throw new IllegalArgumentException("Text is empty");
+    }
+    if (StringUtils.isBlank(word)) {
+      throw new IllegalArgumentException("Word to check is empty");
+    }
+    AtomicInteger occurrence = new AtomicInteger();
+    text.lines()
+        .forEach(
+            line -> {
+              log.info("Line is {}", line.toLowerCase());
+              var counts = StringUtils.countMatches(line.toLowerCase(), word.toLowerCase());
+              if (counts > 0) {
+                occurrence.addAndGet(counts);
+              }
+            });
+    return occurrence.get();
   }
 }
