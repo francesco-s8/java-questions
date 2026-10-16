@@ -1,6 +1,5 @@
 package it.s8.java_questions;
 
-import static java.lang.Math.log;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
