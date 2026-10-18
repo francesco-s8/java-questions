@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 class JavaSeniorInterviewQuestionsTests {
@@ -591,7 +592,7 @@ Cras mollis mi non libero placerat rhoncus. Nam felis arcu, gravida et vulputate
     assertThat(wordOccurrence(text, "Hello")).isZero();
     assertThat(wordOccurrence(text, "Lorem")).isEqualTo(3);
     assertThat(wordOccurrence(text2, "Lorem")).isEqualTo(2);
-    assertThat(wordOccurrence(text3,"lorem")).isEqualTo(59);
+    assertThat(wordOccurrence(text3, "lorem")).isEqualTo(59);
     sp.stop();
     log.info("Test duration is {} (millis) ", sp.getDuration().toMillis());
   }
@@ -621,5 +622,16 @@ Cras mollis mi non libero placerat rhoncus. Nam felis arcu, gravida et vulputate
               }
             });
     return occurrence.get();
+  }
+
+  @Test
+  void readFromResourceFiles() throws Exception {
+    try (var jsonStream = getClass().getClassLoader().getResourceAsStream("json_example.json")) {
+      assertThat(jsonStream).isNotNull();
+      var json = new ObjectMapper().readTree(jsonStream);
+      assertThat(json.get("name").asString()).isEqualTo("John");
+      assertThat(json.get("age").asInt()).isEqualTo(30);
+      assertThat(json.get("city").asString()).isEqualTo("New York");
+    }
   }
 }
