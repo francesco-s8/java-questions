@@ -23,6 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 @Slf4j
 class JavaSeniorInterviewQuestionsTests {
@@ -38,6 +39,14 @@ class JavaSeniorInterviewQuestionsTests {
     var userOne = new User("John", "123");
     var userTwo = new User("Jane", "456");
     return List.of(userOne, userTwo);
+  }
+
+  private List<Long> getTimestampsByDescriptionInRealWorld(String xml, String description) {
+    var log = new XmlMapper().readValue(xml, IntrusionLog.class);
+    return log.events().stream()
+        .filter(event -> description.equals(event.description()))
+        .map(IntrusionEvent::timestamp)
+        .toList();
   }
 
   private Collection<Long> getTimestampsByDescription(String xml, String description) {
@@ -143,8 +152,8 @@ class JavaSeniorInterviewQuestionsTests {
   }
 
   @Test
+  @DisplayName(" How String pool works... and not do to this")
   void stringDifferentObjectInstances() {
-    // How String pool works...
     var first = new String("hello");
     var second = new String("hello");
     assertThat(first).isNotSameAs(second);
@@ -169,7 +178,7 @@ class JavaSeniorInterviewQuestionsTests {
     sw.start();
     var result = isPalindromeSmart(first);
     sw.stop();
-    JavaSeniorInterviewQuestionsTests.log.info(
+    log.info(
         "Time taken to check palindrome (smart method) in nanos : {}", sw.getDuration().toNanos());
     assertThat(result).isEqualTo(isPalindrome);
 
@@ -289,16 +298,16 @@ class JavaSeniorInterviewQuestionsTests {
     return true;
   }
 
-  boolean isPalindromeSingleString(String toCheck) {
-    if (toCheck == null || toCheck.isBlank()) {
+  private boolean isPalindromeSingleString(String toCheck) throws IllegalArgumentException {
+    if (StringUtils.isBlank(toCheck)) {
       throw new IllegalArgumentException("Input is null or empty");
     }
     return toCheck.toLowerCase().contentEquals(new StringBuilder(toCheck.toLowerCase()).reverse());
   }
 
-  boolean isPalindromeSmart(String word) {
+  private boolean isPalindromeSmart(String word) throws IllegalArgumentException {
 
-    if (word == null || word.isBlank()) {
+    if (StringUtils.isBlank(word)) {
       throw new IllegalArgumentException("Input is null or empty");
     }
     var wordLowerCase = word.toLowerCase();
@@ -315,7 +324,7 @@ class JavaSeniorInterviewQuestionsTests {
     return true;
   }
 
-  String numbersToLetters(String s) {
+  private String numbersToLetters(String s) {
     if (s == null || s.isBlank()) {
       throw new IllegalArgumentException("Input is null or empty");
     }
@@ -343,23 +352,40 @@ class JavaSeniorInterviewQuestionsTests {
   }
 
   @Test
-  void intrusions() {
+  void intrusionsSillyWay() {
     String xml =
         """
-            <?xml version="1.0" encoding="UTF-8"?>
-            + "<log>
-            + "<event timestamp="1614285589">
-            + "<description>Intrusion detected</description>
-            + "</event>
-            + "<event timestamp="1614286432">
-            + "<description>Intrusion ended</description>
-            + "</event>
-            + "</log>
+            <log>
+              <event timestamp="1614285589">
+                <description>Intrusion detected</description>
+              </event>
+              <event timestamp="1614286432">
+                <description>Intrusion ended</description>
+              </event>
+            </log>
         """;
 
-    Collection<Long> timestamps = getTimestampsByDescription(xml, "Intrusion ended");
-    assertThat(timestamps).containsExactly(1614286432L);
+    assertThat(getTimestampsByDescription(xml, "Intrusion ended")).containsExactly(1614286432L);
     assertThat(getTimestampsByDescription(xml, "Intrusion detected")).containsExactly(1614285589L);
+  }
+
+  @Test
+  void checkIntrusionInASmartWay() {
+    String xml =
+        """
+                <log>
+                  <event timestamp="1614285589">
+                    <description>Intrusion detected</description>
+                  </event>
+                  <event timestamp="1614286432">
+                    <description>Intrusion ended</description>
+                  </event>
+                </log>
+            """;
+    assertThat(getTimestampsByDescriptionInRealWorld(xml, "Intrusion ended"))
+        .containsExactly(1614286432L);
+    assertThat(getTimestampsByDescriptionInRealWorld(xml, "Intrusion detected"))
+        .containsExactly(1614285589L);
   }
 
   @Test
